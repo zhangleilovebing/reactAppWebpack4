@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Card} from 'antd'
-import "./index.less";
+//import "./index.less";
 class App extends React.Component {
 
     render() {
