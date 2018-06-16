@@ -1,12 +1,13 @@
+
 const webpack = require('webpack');
 const path = require('path');
 const chalk = require('chalk');
 const reactDevUtils = require('./react-dev-utils');
-const config = require('../webpack.dev.config');
+const config = require('../config/webpack.dev.config');
 const compiler = reactDevUtils.createCompiler(webpack, config);
 const WebpackDevServer = require('webpack-dev-server');
 const isInteractive = process.stdout.isTTY;
-
+const httpProxyMiddleware = require('http-proxy-middleware');
 const devServer = new WebpackDevServer(compiler, {
     contentBase: path.resolve(__dirname, 'dist'),
     hot: true,
@@ -15,13 +16,14 @@ const devServer = new WebpackDevServer(compiler, {
     watchContentBase: true,
     compress: true,
     clientLogLevel: "none",
-    proxy: {
-        "/api": {
-            target: "http://localhost:3000",
-            pathRewrite: { "^/api": "" }
+    proxy:{
+        '/':{
+            target:require(path.resolve(__dirname,'../pachage.json')).proxy,
+            secure:false,
+            changeOrigin:true,
+            pathRewrite:{'^/api':''}
         }
     }
-
 })
 
 devServer.listen('8080', '0.0.0.0', err => {
