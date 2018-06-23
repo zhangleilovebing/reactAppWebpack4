@@ -3,17 +3,22 @@ const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const autoprefixer = require('autoprefixer');
+const manifest = require('../vendor-manifest.json');
+const HappyPack = require('happypack');
+const os = require('os');
+//线程
+const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
 
 module.exports = {
-  devtool: 'cheap-module-source-map',
+  devtool: 'source-map',
   mode: 'development',
   entry: [
-    './src/index.js',
+    path.resolve(__dirname, '../src/index.js'),
     require.resolve('webpack-dev-server/client') + '?/',
     require.resolve('webpack/hot/dev-server'),
   ],
   output: {
-    path: path.resolve(__dirname, 'build'),
+    path: path.resolve(__dirname, '../build'),
     filename: '[name].[hash].js',
     publicPath: '/'
   },
@@ -36,67 +41,18 @@ module.exports = {
         }
       },
       {
-        test: /\.css$/,
-        use: [
-          require.resolve('style-loader'),
-          {
-            loader: require.resolve('css-loader'),
-            options: {
-              importLoaders: 1,
-            },
-          },
-          {
-            loader: require.resolve('postcss-loader'),
-            options: {
-              ident: 'postcss',
-              plugins: () => [
-                require('postcss-flexbugs-fixes'),
-                autoprefixer({
-                  browsers: [
-                    '>1%',
-                    'last 4 versions',
-                    'Firefox ESR',
-                    'not ie < 9',
-                  ],
-                  flexbox: 'no-2009',
-                }),
-              ],
-            },
-          },
-        ],
-      },
-      {
-        test: /\.less$/,
-        use: [
-          require.resolve('style-loader'),
-          require.resolve('css-loader'),
-          {
-            loader: require.resolve('postcss-loader'),
-            options: {
-              ident: 'postcss',
-              plugins: () => [
-                require('postcss-flexbugs-fixes'),
-                autoprefixer({
-                  browsers: [
-                    '>1%',
-                    'last 4 versions',
-                    'Firefox ESR',
-                    'not ie < 9',
-                  ],
-                  flexbox: 'no-2009',
-                }),
-              ],
-            },
-          },
-          {
-            loader: require.resolve('less-loader'),
-            options: {
-
-            },
-          },
-        ],
+        test: /\.less|.css$/,
+        loaders: ['style-loader', 'css-loader', 'less-loader']
       }
     ]
+  },
+  devServer: {
+    contentBase: path.resolve(__dirname, '../dist'),
+    historyApiFallback: true,
+    hot: true,
+    compress: true,
+    host: 'localhost',
+    port: 8080
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
@@ -104,6 +60,13 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './dist/index.html',
       inject: true,
+    }),
+    new webpack.DllReferencePlugin({
+      //context:path.resolve(__dirname,'../dist'),
+      manifest
+    }),
+    new webpack.ProvidePlugin({
+      $: 'jquery'
     })
   ]
 };

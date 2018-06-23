@@ -18,7 +18,7 @@ const devServer = new WebpackDevServer(compiler, {
     clientLogLevel: "none",
     proxy:{
         '/':{
-            target:require(path.resolve(__dirname,'../pachage.json')).proxy,
+            target:require(path.resolve(__dirname,'../package.json')).proxy,
             secure:false,
             changeOrigin:true,
             pathRewrite:{'^/api':''}
