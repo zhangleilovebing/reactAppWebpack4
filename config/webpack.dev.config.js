@@ -47,7 +47,7 @@ module.exports = {
     ]
   },
   devServer: {
-    contentBase: path.resolve(__dirname, '../dist'),
+    contentBase: path.resolve(__dirname, '../public'),
     historyApiFallback: true,
     hot: true,
     compress: true,
@@ -58,11 +58,11 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new HtmlWebpackPlugin({
-      template: './dist/index.html',
+      template: './public/index.html',
       inject: true,
     }),
     new webpack.DllReferencePlugin({
-      //context:path.resolve(__dirname,'../dist'),
+      //context:path.resolve(__dirname,'../public'),
       manifest
     }),
     new webpack.ProvidePlugin({

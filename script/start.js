@@ -9,7 +9,7 @@ const WebpackDevServer = require('webpack-dev-server');
 const isInteractive = process.stdout.isTTY;
 const httpProxyMiddleware = require('http-proxy-middleware');
 const devServer = new WebpackDevServer(compiler, {
-    contentBase: path.resolve(__dirname, 'dist'),
+    contentBase: path.resolve(__dirname, 'public'),
     hot: true,
     open: true,
     quiet: true,
