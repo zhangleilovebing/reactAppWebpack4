@@ -67,6 +67,23 @@ module.exports = {
     }),
     new webpack.ProvidePlugin({
       $: 'jquery'
-    })
+    }),
+    new HappyPack({
+      id: 'jsHappy',
+      cache: true,
+      threadPool: happyThreadPool,
+      loaders: [{
+        loader: 'babel-loader?cacheDirectory',
+        options: {
+          plugins: ["transform-decorators-legacy", ['import', [{ libraryName: "antd", style: true }]], ['syntax-dynamic-import']],
+          presets: ['es2015', 'stage-0', 'react']
+        }
+      }]
+    }),
+    //如果有单独提取css文件的话
+    // new HappyPack({
+    //   id: 'lessHappy',
+    //   loaders: ['style', 'css', 'less']
+    // })
   ]
 };
